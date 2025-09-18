@@ -6,24 +6,36 @@ import {
   ScatterChart, Scatter, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar
 } from 'recharts';
 
+// Define the type for a single student object
+interface Student {
+  student_id: string;
+  name: string;
+  class: string;
+  comprehension: number;
+  attention: number;
+  focus: number;
+  retention: number;
+  assessment_score: number;
+  engagement_time: number;
+  learning_persona: string;
+}
+
 // Main Dashboard Component
 const StudentDashboard = () => {
-  // State variables for student data, loading, sorting, and selected student
-  const [students, setStudents] = useState([]);
+  // Use the new Student type for the state
+  const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
-  const [sortConfig, setSortConfig] = useState(null);
+  const [sortConfig, setSortConfig] = useState<{ key: keyof Student; direction: 'ascending' | 'descending' } | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
 
   // 1. Data Fetching
   useEffect(() => {
-    // This fetches the student_data.json file from the 'public' directory
     fetch('/student_data.json')
       .then(res => res.json())
-      .then(data => {
+      .then((data: Student[]) => {
         setStudents(data);
         setLoading(false);
-        // Set the first student as the default selected student for the Radar Chart
         if (data.length > 0) {
           setSelectedStudent(data[0]);
         }
@@ -39,7 +51,7 @@ const StudentDashboard = () => {
     if (!students || students.length === 0) {
       return {};
     }
-
+    
     // Calculate Averages for Overview Stats
     const totalScore = students.reduce((sum, s) => sum + s.assessment_score, 0);
     const avgScore = (totalScore / students.length).toFixed(1);
@@ -64,7 +76,7 @@ const StudentDashboard = () => {
       acc[s.learning_persona].totalScore += s.assessment_score;
       acc[s.learning_persona].count += 1;
       return acc;
-    }, {});
+    }, {} as Record<string, { totalScore: number; count: number }>);
 
     const barChartData = Object.keys(personaData).map(persona => ({
       persona: persona,
@@ -93,7 +105,6 @@ const StudentDashboard = () => {
 
   // 3. Sorting and Filtering Logic for the Student Table
   const sortedStudents = useMemo(() => {
-    // This line was previously `let sortableStudents`.
     const sortableStudents = [...students];
     if (sortConfig !== null) {
       sortableStudents.sort((a, b) => {
@@ -112,15 +123,15 @@ const StudentDashboard = () => {
     );
   }, [students, sortConfig, searchTerm]);
 
-  const requestSort = (key) => {
-    let direction = 'ascending';
+  const requestSort = (key: keyof Student) => {
+    let direction: 'ascending' | 'descending' = 'ascending';
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
       direction = 'descending';
     }
     setSortConfig({ key, direction });
   };
   
-  const getClassNamesFor = (key) => {
+  const getClassNamesFor = (key: keyof Student) => {
     if (!sortConfig) {
       return '';
     }
@@ -204,7 +215,7 @@ const StudentDashboard = () => {
                 onChange={(e) => {
                   const studentId = e.target.value;
                   const student = students.find(s => s.student_id === studentId);
-                  setSelectedStudent(student);
+                  setSelectedStudent(student || null);
                 }}
                 className="block w-full rounded-md border-gray-600 bg-gray-700 py-2 pl-3 pr-10 text-base text-white focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                 defaultValue={students[0]?.student_id || ''}
