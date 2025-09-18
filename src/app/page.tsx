@@ -56,7 +56,8 @@ const StudentDashboard = () => {
     const totalScore = students.reduce((sum, s) => sum + s.assessment_score, 0);
     const avgScore = (totalScore / students.length).toFixed(1);
 
-    const avgSkills = students.reduce((acc, s) => {
+    // This is the key fix: Explicitly typing the object to satisfy TypeScript
+    const avgSkills: Record<string, number> = students.reduce((acc: Record<string, number>, s) => {
       acc.comprehension += s.comprehension;
       acc.attention += s.attention;
       acc.focus += s.focus;
@@ -65,7 +66,7 @@ const StudentDashboard = () => {
     }, { comprehension: 0, attention: 0, focus: 0, retention: 0 });
 
     for (const key in avgSkills) {
-      avgSkills[key] = (avgSkills[key] / students.length).toFixed(1);
+      avgSkills[key] = parseFloat((avgSkills[key] / students.length).toFixed(1));
     }
     
     // Data for Bar Chart (Average Score by Persona)
