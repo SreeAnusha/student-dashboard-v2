@@ -163,15 +163,15 @@ const StudentDashboard = () => {
           </div>
           <div className="bg-gray-800 rounded-xl p-6 shadow-lg transform transition-transform hover:scale-105">
             <h3 className="text-lg font-semibold text-gray-400">Avg. Comprehension</h3>
-            <p className="mt-2 text-3xl font-bold text-yellow-400">{avgComprehension.toFixed(1)}</p>
+            <p className="mt-2 text-3xl font-bold text-yellow-400">{avgComprehension?.toFixed(1) ?? 'N/A'}</p>
           </div>
           <div className="bg-gray-800 rounded-xl p-6 shadow-lg transform transition-transform hover:scale-105">
             <h3 className="text-lg font-semibold text-gray-400">Avg. Attention</h3>
-            <p className="mt-2 text-3xl font-bold text-red-400">{avgAttention.toFixed(1)}</p>
+            <p className="mt-2 text-3xl font-bold text-red-400">{avgAttention?.toFixed(1) ?? 'N/A'}</p>
           </div>
           <div className="bg-gray-800 rounded-xl p-6 shadow-lg transform transition-transform hover:scale-105">
             <h3 className="text-lg font-semibold text-gray-400">Avg. Focus</h3>
-            <p className="mt-2 text-3xl font-bold text-purple-400">{avgFocus.toFixed(1)}</p>
+            <p className="mt-2 text-3xl font-bold text-purple-400">{avgFocus?.toFixed(1) ?? 'N/A'}</p>
           </div>
         </div>
         
