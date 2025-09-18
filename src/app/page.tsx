@@ -56,8 +56,8 @@ const StudentDashboard = () => {
     const totalScore = students.reduce((sum, s) => sum + s.assessment_score, 0);
     const avgScore = (totalScore / students.length).toFixed(1);
 
-    // This is the key fix: Explicitly typing the object to satisfy TypeScript
-    const avgSkills: Record<string, number> = students.reduce((acc: Record<string, number>, s) => {
+    // This is the key fix: We keep the average values as numbers
+    const avgSkills = students.reduce((acc, s) => {
       acc.comprehension += s.comprehension;
       acc.attention += s.attention;
       acc.focus += s.focus;
@@ -65,9 +65,10 @@ const StudentDashboard = () => {
       return acc;
     }, { comprehension: 0, attention: 0, focus: 0, retention: 0 });
 
-    for (const key in avgSkills) {
-      avgSkills[key] = parseFloat((avgSkills[key] / students.length).toFixed(1));
-    }
+    const avgComprehension = (avgSkills.comprehension / students.length);
+    const avgAttention = (avgSkills.attention / students.length);
+    const avgFocus = (avgSkills.focus / students.length);
+    const avgRetention = (avgSkills.retention / students.length);
     
     // Data for Bar Chart (Average Score by Persona)
     const personaData = students.reduce((acc, s) => {
@@ -93,16 +94,16 @@ const StudentDashboard = () => {
     
     // Data for Radar Chart (Selected Student vs Average)
     const radarData = selectedStudent ? [
-      { skill: 'Comprehension', A: selectedStudent.comprehension, B: parseFloat(avgSkills.comprehension) },
-      { skill: 'Attention', A: selectedStudent.attention, B: parseFloat(avgSkills.attention) },
-      { skill: 'Focus', A: selectedStudent.focus, B: parseFloat(avgSkills.focus) },
-      { skill: 'Retention', A: selectedStudent.retention, B: parseFloat(avgSkills.retention) },
+      { skill: 'Comprehension', A: selectedStudent.comprehension, B: avgComprehension },
+      { skill: 'Attention', A: selectedStudent.attention, B: avgAttention },
+      { skill: 'Focus', A: selectedStudent.focus, B: avgFocus },
+      { skill: 'Retention', A: selectedStudent.retention, B: avgRetention },
     ] : [];
 
-    return { avgScore, avgSkills, barChartData, scatterChartData, radarData };
+    return { avgScore, avgComprehension, avgAttention, avgFocus, avgRetention, barChartData, scatterChartData, radarData };
   }, [students, selectedStudent]);
 
-  const { avgScore, avgSkills, barChartData, scatterChartData, radarData } = processedData;
+  const { avgScore, avgComprehension, avgAttention, avgFocus, avgRetention, barChartData, scatterChartData, radarData } = processedData;
 
   // 3. Sorting and Filtering Logic for the Student Table
   const sortedStudents = useMemo(() => {
@@ -162,15 +163,15 @@ const StudentDashboard = () => {
           </div>
           <div className="bg-gray-800 rounded-xl p-6 shadow-lg transform transition-transform hover:scale-105">
             <h3 className="text-lg font-semibold text-gray-400">Avg. Comprehension</h3>
-            <p className="mt-2 text-3xl font-bold text-yellow-400">{avgSkills.comprehension}</p>
+            <p className="mt-2 text-3xl font-bold text-yellow-400">{avgComprehension.toFixed(1)}</p>
           </div>
           <div className="bg-gray-800 rounded-xl p-6 shadow-lg transform transition-transform hover:scale-105">
             <h3 className="text-lg font-semibold text-gray-400">Avg. Attention</h3>
-            <p className="mt-2 text-3xl font-bold text-red-400">{avgSkills.attention}</p>
+            <p className="mt-2 text-3xl font-bold text-red-400">{avgAttention.toFixed(1)}</p>
           </div>
           <div className="bg-gray-800 rounded-xl p-6 shadow-lg transform transition-transform hover:scale-105">
             <h3 className="text-lg font-semibold text-gray-400">Avg. Focus</h3>
-            <p className="mt-2 text-3xl font-bold text-purple-400">{avgSkills.focus}</p>
+            <p className="mt-2 text-3xl font-bold text-purple-400">{avgFocus.toFixed(1)}</p>
           </div>
         </div>
         
