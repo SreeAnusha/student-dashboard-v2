@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -94,7 +93,8 @@ const StudentDashboard = () => {
 
   // 3. Sorting and Filtering Logic for the Student Table
   const sortedStudents = useMemo(() => {
-    let sortableStudents = [...students];
+    // This line was previously `let sortableStudents`.
+    const sortableStudents = [...students];
     if (sortConfig !== null) {
       sortableStudents.sort((a, b) => {
         if (a[sortConfig.key] < b[sortConfig.key]) {
@@ -238,11 +238,11 @@ const StudentDashboard = () => {
             </li>
             <li>
               <span className="font-bold text-green-400">Predictive Model:</span>
-              <p>The machine learning model achieved an <span className="text-yellow-400">R-squared score of approximately 0.70</span>. This means our cognitive skills data can explain about 70% of the variance in a student's final score.</p>
+              <p>The machine learning model achieved an <span className="text-yellow-400">R-squared score of approximately 0.70</span>. This means our cognitive skills data can explain about 70% of the variance in a student&apos;s final score.</p>
             </li>
             <li>
               <span className="font-bold text-green-400">Student Personas:</span>
-              <p>Students can be clustered into distinct learning personas. The <span className="text-yellow-400">'High-Skill Achievers'</span> group, for example, is defined by high scores across all cognitive skills and achieves the highest average assessment score.</p>
+              <p>Students can be clustered into distinct learning personas. The <span className="text-yellow-400">&apos;High-Skill Achievers&apos;</span> group, for example, is defined by high scores across all cognitive skills and achieves the highest average assessment score.</p>
             </li>
           </ul>
         </div>
